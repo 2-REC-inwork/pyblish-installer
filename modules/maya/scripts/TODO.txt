@@ -1,0 +1,1 @@
+'init_pyblish.py' isn't specific to Maya, so should be moved to a common directory and used by other DCCs.

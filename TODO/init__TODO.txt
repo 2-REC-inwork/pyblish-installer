@@ -1,0 +1,151 @@
+
+config arguments:
+- latest or stable
+  => master or specific tag/commit
+  (+latest or specific for PyQt5)
+  (with warning that 'latest' might not work)
+  + add possibility to add version for each lib/repo
+
+- 'portable_python'
+  => using installed Python, or download embed versions (+qt)
+
+
+- python version
+
+
+
+=====================
+
+
+1 download
+=> Download all required source/tools to be able to install Pyblish.
+
+(by default, download "all" + add variables "no_maya", "no_houdini", etc
+=> set PYBLISH_XXX_VERSION where "XXX" is the name of a module (upper cases from module name, eg: "MAYA" for "maya")
+('all' defined by list of directories in current repo 'modules'?)
+)
+
+PYBLISH_LATEST
+=> if not (default) => stable (what versions?)
+    => try with current latest tags (TEST BEFORE!)
+
+=> each can override latest or default
+PYBLISH_BASE_VERSION
+PYBLISH_QML_VERSION
+
+PYBLISH_MAYA_VERSION
+...
+
+
+- git or download each repo
+
+
+
+- 32/64 bits:
+  USE_32_BITS
+  => default no (64)
+
+
+
+- if not "NO_PYTHON"
+  - if not "PYTHON_EXECUTABLE"
+
+TODO: check workflow...
+    - if not "PYTHON_VERSION"
+        look for local python ('python.exe' in PATH or in default dir: 'appdata/.../python)
+          (if more than 1 => 'error: more than 1, please specify PYTHON_EXECUTABLE')
+          => if found
+            - set "PYTHON_EXECUTABLE"
+            - set "PYTHON_VERSION"
+                ####
+                REM - Get python version:
+                for /F "tokens=* USEBACKQ" %%F in (`%PYTHON_EXECUTABLE% -V`) do (
+                    set PYTHON_VERSION=%%F
+                )
+                set PYTHON_VERSION=%PYTHON_VERSION:~7%
+                echo %PYTHON_VERSION%
+                ####
+
+    - if not "PYTHON_VERSION"
+      => PYTHON_VERSION=3.7.9
+      TODO: or try with Python 3.9.6?
+
+    - if not "PYTHON_EXECUTABLE"
+      - set "portable_python=true"
+    - if "portable_python" (rename?)
+      - download embed python zip
+        Examples:
+          https://www.python.org/ftp/python/3.9.6/python-3.9.6-embed-amd64.zip
+          https://www.python.org/ftp/python/3.7.9/python-3.7.9-embed-amd64.zip
+          https://www.python.org/ftp/python/3.7.5/python-3.7.5-embed-amd64.zip
+      - extract zip (temp dir)
+        +get+install pip (=> edit '_pth')
+      - set "PYTHON_EXECUTABLE"
+      - compress temp dir
+      - delete zip (replace downloaded zip)
+
+  - if "PYTHON_EXECUTABLE" exists
+    (- check for pip => if not, error)
+    - download pyqt5 (with pip)
+        PYQT5_LATEST
+        or
+        PYQT5_VERSION
+        => else default from PYTHON_VERSION (ignored if PYQT5_LATEST)
+        Python >= 3.7 => PyQt5==5.15.4 (or latest?)
+        else
+        Python >= 3.5 => PyQt5==5.7.1
+        else
+        => error not handled
+        (TODO: python2?)
+  - else
+    - error: python not found, skipping pyqt5 download
+
+  - if "portable_python"
+    - delete temp dir
+
+- else
+  - warning: python not found, skipping pyqt5 download
+
+!? - should store some info for install?
+(eg: python version, pyqt version, ...)
+
+OUTPUT/RESULT:
+- pyblish repos zips
+- embedded python zip (with pip) (if not "NO_PYTHON" and "portable_python")
+- pyqt5 packages (if not "NO_PYTHON")
+
+----
+
+2 setup
+=> Install Pyblish from downloaded components.
+(offline install)
+
+(if 'pyblidh_path' exist => stop - user should delete if want to reinstall)
+
+- if not "PYTHON_EXECUTABLE"
+  look for local python ('python.exe' in PATH or in default dir: 'appdata/.../python)
+    (if more than 1 => 'error: more than 1, please specify PYTHON_EXECUTABLE')
+    => if found, set "PYTHON_EXECUTABLE"
+
+  - if not "PYTHON_EXECUTABLE"
+    - set "portable_python=true"
+  - if "portable_python" (rename?)
+    - check if have embed python zip
+      => if not: error!
+    - extract embed python
+    (+'remember': set 'EMBED_PYTHON')
+    - set "PYTHON_EXECUTABLE"
+
+
+- if not "PYTHON_EXECUTABLE" exists
+  => error
+
+- if no pyqt5
+  (- check for pip => if not, error)
+  (should check version matches with python version... how?)
+  - install pyqt5
+
+- extract/copy each repo to 'pyblidh_path/src'
+
+- if EMBED_PYTHON => create 'pyblish.pth' with each 'src' path
+

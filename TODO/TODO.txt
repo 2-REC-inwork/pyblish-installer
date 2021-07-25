@@ -1,0 +1,11 @@
+
+init__TODO.txt
+=> workflow/process of 'init.bat' => need to finish/complete.
+
+setup_pyblish.bat
+=> setup script, adapt to project (=> deploy.bat)
+
+
+
+See about "pyblish_setup.md" if/what want to keep ...
+(interesting setup/usage infos)
