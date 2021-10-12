@@ -90,8 +90,65 @@ for %%m in (%PYBLISH_MODULES%) do (
 )
 
 
-TODO: continue from here!
-REM - TODO: python version
+
+REM - 32/64 BITS
+REM - TODO!
+
+
+
+REM - TODO: or 'not "NO_PYTHON" == "ON"'?
+if "NO_PYTHON" == "" (
+    REM - Python version
+    if "PYTHON_EXECUTABLE" == "" (
+
+        if "PYTHON_VERSION" == "" (
+            REM - Look for local python ('python.exe' in PATH or in default dir: 'appdata/.../python)
+
+
+!!!!!!!!!!!!
+loop through all entries in PATH
+=> TODO: make function
+REM - Expand "PATH" values
+for /f "delims=<" %%d in ('call echo "%PATH%"') do (
+    set TEMP_PATH=%%d
+)
+
+REM - Remove quotes "
+set TEMP_PATH=;%TEMP_PATH:"=%;
+
+REM - Put every ; between quotes
+set TEMP_PATH=%TEMP_PATH:;=";"%
+
+REM - Remove "; prefix
+set TEMP_PATH=%TEMP_PATH:~2%
+
+REM - Remove ;" suffix
+set TEMP_PATH=%TEMP_PATH:~0,-2%
+
+REM - Remove empty values ""; (begin and in)
+set TEMP_PATH=%TEMP_PATH:"";=%
+
+REM - Remove other empty values ;"" (end)
+set TEMP_PATH=%TEMP_PATH:;""=%
+
+REM - Loop on each entry
+for %%d in (%TEMP_PATH%) do (
+    echo D %%d
+
+    => check if exists with \python.exe suffix
+    if exist %%d (
+        echo EXISTS
+    ) else (
+        echo NOT EXISTS
+    )
+)
+!!!!!!!!!!!!!
+
+
+        )
+
+    )
+)
 
 
 
